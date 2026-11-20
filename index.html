@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario de Adviento | Alba´s Beauty Salón</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tipografías Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            studioBg: '#FAF7F8',        // Blanco perla estudio luminoso
+            pureWhite: '#FFFFFF',       // Blanco puro tarjetas y modal
+            petalLight: '#FCECF3',      // Rosa pétalo ultra suave
+            petalPink: '#F4B8D2',       // Rosa pastel empolvado
+            roseBrand: '#E88DB4',       // Rosa protagonista de marca
+            mauveDeep: '#B85D84',       // Malva suave
+            mauveDark: '#8F3E62',       // Malva profundo hover
+            roseGold: '#C99A7E',        // Oro rosa metálico refinado
+            roseGoldLight: '#E5C6B3',   // Champán rosado claro
+            roseGoldDark: '#A37458',    // Oro rosa envejecido
+            sageAccent: '#3D6B5E',      // Verde salvia botánico
+            charcoalBeauty: '#2C1E24',  // Texto oscuro cálido
+            mutedBeauty: '#6E5D65',     // Gris malva secundario
+            softBorder: '#EEDCE4',      // Borde rosa sutil
+            lockedStudio: '#F2ECEF',    // Perla apagado días bloqueados
+            whatsappGreen: '#25D366',   // Acento WhatsApp
+            whatsappDark: '#1EBE5D',    // Hover WhatsApp
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            beauty: '0 10px 30px -8px rgba(184, 93, 132, 0.14)',
+            beautyHover: '0 18px 36px -8px rgba(184, 93, 132, 0.24)',
+            roseGlow: '0 0 24px rgba(232, 141, 180, 0.35)',
+            modal: '0 28px 60px -12px rgba(44, 30, 36, 0.32)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF7F8;
+      background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #FAF7F8 60%, #F5ECF0 100%);
+      color: #2C1E24;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #sparkle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .rose-gold-bg {
+      background: linear-gradient(135deg, #DFB399 0%, #C99A7E 50%, #B38165 100%);
+    }
+
+    .rose-gold-bg:hover {
+      background: linear-gradient(135deg, #E6BFA8 0%, #D1A58B 50%, #BD8C70 100%);
+    }
+
+    .brand-pink-gradient {
+      background: linear-gradient(135deg, #E88DB4 0%, #C86D94 55%, #B85D84 100%);
+    }
+
+    .brand-pink-gradient:hover {
+      background: linear-gradient(135deg, #EE9BC0 0%, #D1789E 55%, #C2668E 100%);
+    }
+
+    /* Marco interior ornamental fino en oro rosa para tarjetas cerradas */
+    .ornamental-frame::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 0.75rem;
+      pointer-events: none;
+      transition: border-color 0.35s ease;
+    }
+
+    .ornamental-frame:not(.is-locked):hover::after {
+      border-color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Arco arquitectónico en oro rosa para retrato de Alba */
+    .portrait-arch {
+      border-radius: 9999px 9999px 1.75rem 1.75rem;
+    }
+
+    .advent-card {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.35s ease,
+                  background-color 0.35s ease;
+    }
+
+    .advent-card:not(.is-locked):hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 36px -8px rgba(184, 93, 132, 0.24);
+    }
+
+    @keyframes beautyPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.75);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+      }
+    }
+
+    .pulse-beauty {
+      animation: beautyPulse 2.4s infinite ease-in-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-animate {
+      animation: modalFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-petalPink/40 selection:text-charcoalBeauty relative">
+
+  <!-- Destellos sutiles en oro rosa y pétalos -->
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <!-- =====================================================================
+       1. CABECERA EDITORIAL
+       ===================================================================== -->
+  <header class="w-full bg-pureWhite/92 backdrop-blur-md border-b border-softBorder sticky top-0 z-30 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3.5">
+        
+        <!-- Marca y Redes Sociales -->
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-petalLight border border-roseGold/50 text-mauveDeep text-xs font-serif">
+                ✦
+              </span>
+              <span id="brand-eyebrow" class="text-[11px] uppercase tracking-[0.26em] text-mauveDeep font-bold">
+                Alba´s Beauty Salón
+              </span>
+            </div>
+            <h1 id="brand-title" class="font-serif text-2xl sm:text-[28px] font-semibold tracking-tight text-charcoalBeauty leading-tight mt-0.5">
+              Calendario de Adviento · 24 Días de Cuidado &amp; Belleza
+            </h1>
+            <!-- Enlaces directos a Instagram y TikTok -->
+            <div class="flex flex-wrap items-center gap-3 mt-1">
+              <a
+                href="https://www.instagram.com/albas.beauttysalon"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs text-mutedBeauty hover:text-mauveDeep transition-colors font-medium"
+                aria-label="Instagram de Alba's Beauty Salón"
+              >
+                <svg class="w-3.5 h-3.5 text-mauveDeep" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <span>@albas.beauttysalon</span>
+              </a>
+              <span class="text-roseGold/50 text-xs">•</span>
+              <a
+                href="https://www.tiktok.com/@albas.beauttysalon"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs text-mutedBeauty hover:text-mauveDeep transition-colors font-medium"
+                aria-label="TikTok de Alba's Beauty Salón"
+              >
+                <svg class="w-3.5 h-3.5 text-mauveDeep" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+                <span>@albas.beauttysalon</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Progreso e Interruptor Vista Previa / Fecha Real -->
+        <div class="flex flex-wrap items-center justify-between md:justify-end gap-4 sm:gap-5 pt-2 md:pt-0 border-t md:border-t-0 border-softBorder">
+          
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <p class="text-[10px] uppercase tracking-[0.18em] text-mutedBeauty">Tu avance</p>
+              <p class="text-xs sm:text-sm font-medium text-charcoalBeauty">
+                <span id="progress-count" class="font-serif text-lg sm:text-xl font-bold text-mauveDeep">0</span>
+                <span class="text-mutedBeauty"> / 24 días</span>
+              </p>
+            </div>
+            <div class="w-16 sm:w-20 h-1.5 bg-petalLight rounded-full overflow-hidden border border-softBorder">
+              <div id="progress-bar" class="h-full brand-pink-gradient transition-all duration-500 rounded-full" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="h-6 w-px bg-softBorder hidden sm:block"></div>
+
+          <!-- Interruptor Modo Vista Previa vs. Fecha Real -->
+          <div class="flex items-center gap-2.5 bg-petalLight/65 px-3.5 py-1.5 rounded-full border border-softBorder">
+            <button
+              id="mode-toggle-btn"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-mauveDeep transition-colors duration-200 ease-in-out focus:outline-none"
+              title="Cambiar entre Modo Vista Previa y Fecha Real de Diciembre"
+            >
+              <span
+                id="mode-toggle-knob"
+                class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-pureWhite shadow ring-0 transition duration-200 ease-in-out translate-x-4"
+              ></span>
+            </button>
+            <div class="flex flex-col">
+              <span id="mode-label" class="text-xs font-semibold text-charcoalBeauty leading-tight">
+                Modo Vista Previa
+              </span>
+              <span id="mode-sublabel" class="text-[10px] text-mutedBeauty leading-tight">
+                Todas las casillas abiertas
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       2. SECCIÓN PRINCIPAL: BIENVENIDA EN ARCO + CUADRÍCULA DE 24 DÍAS
+       ===================================================================== -->
+  <main class="relative z-10 flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-11">
+    
+    <!-- Hero Editorial en Dos Columnas -->
+    <section class="bg-pureWhite border border-softBorder rounded-3xl p-6 sm:p-9 lg:p-10 shadow-beauty mb-10 sm:mb-12 relative overflow-hidden">
+      <!-- Decoración botánica/estética sutil -->
+      <svg class="hidden lg:block absolute -right-6 -bottom-6 w-44 h-44 text-petalPink/25 pointer-events-none rotate-12" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <line x1="25" y1="95" x2="72" y2="48" stroke-linecap="round" />
+        <line x1="70" y1="50" x2="94" y2="26" stroke-linecap="round" />
+        <line x1="74" y1="42" x2="82" y2="50" stroke-linecap="round" />
+        <line x1="78" y1="38" x2="86" y2="46" stroke-linecap="round" />
+        <line x1="82" y1="34" x2="90" y2="42" stroke-linecap="round" />
+        <line x1="86" y1="30" x2="94" y2="38" stroke-linecap="round" />
+        <line x1="90" y1="26" x2="98" y2="34" stroke-linecap="round" />
+      </svg>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center relative z-10">
+        
+        <!-- Columna Izquierda: Arco Arquitectónico en Oro Rosa con Retrato de Alba -->
+        <div class="lg:col-span-4 flex flex-col items-center">
+          <div
+            id="alba-arch-trigger"
+            role="button"
+            tabindex="0"
+            title="Haz clic para cargar o cambiar la fotografía de Alba"
+            class="group relative p-2.5 bg-gradient-to-b from-petalPink/45 via-petalLight to-roseGoldLight/40 portrait-arch border-2 border-roseGold/70 shadow-beauty cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
+          >
+            <div class="w-48 h-60 sm:w-56 sm:h-72 overflow-hidden portrait-arch bg-petalLight relative">
+              <img
+                id="alba-portrait-img"
+                src="Alba.png"
+                alt="Alba - Fundadora de Alba´s Beauty Salón"
+                class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <!-- Superposición discreta al pasar el cursor para actualizar imagen -->
+              <div class="absolute inset-x-0 bottom-0 bg-charcoalBeauty/60 backdrop-blur-xs text-pureWhite text-[10px] py-1.5 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
+                <svg class="w-3 h-3 text-petalPink" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>Cambiar foto</span>
+              </div>
+            </div>
+            <input type="file" id="alba-photo-input" accept="image/*" class="hidden" />
+
+            <!-- Insignia flotante especialista -->
+            <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-pureWhite px-4 py-1.5 rounded-full border border-roseGold/60 shadow-xs flex items-center gap-1.5">
+              <span class="text-roseGold text-xs">✦</span>
+              <span class="text-[11px] font-semibold tracking-wide text-charcoalBeauty">Alba · Esteticista &amp; Lash/Brow Artist</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Mensaje de Bienvenida + Especialidades + Contacto Directo -->
+        <div class="lg:col-span-8 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-petalLight border border-petalPink/60 text-mauveDeep text-[11px] uppercase tracking-[0.22em] font-semibold mb-3.5">
+            <span>✦</span>
+            <span>Edición Especial Diciembre · 24 Días de Mimos</span>
+            <span>✦</span>
+          </div>
+
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-[42px] font-semibold text-charcoalBeauty leading-tight mb-3.5">
+            ¡Hola! Soy Alba y quiero consentirte esta Navidad
+          </h2>
+
+          <p class="text-sm sm:text-base text-mutedBeauty font-normal leading-relaxed mb-5 max-w-2xl mx-auto lg:mx-0">
+            En <strong class="font-semibold text-charcoalBeauty">Alba´s Beauty Salón</strong> preparamos este Calendario de Adviento con todo el cariño para agradecer tu confianza. Abre tu casilla diaria para descubrir descuentos exclusivos en <span class="text-mauveDeep font-medium">higiene facial</span>, <span class="text-mauveDeep font-medium">laminado de cejas</span>, <span class="text-mauveDeep font-medium">lifting de pestañas</span> y obsequios pensados para realzar tu belleza natural.
+          </p>
+
+          <!-- Insignias de Especialidades -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mb-5">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studioBg border border-softBorder text-xs font-medium text-charcoalBeauty">
+              <svg class="w-3.5 h-3.5 text-roseBrand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+              </svg>
+              Higiene Facial
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studioBg border border-softBorder text-xs font-medium text-charcoalBeauty">
+              <svg class="w-3.5 h-3.5 text-roseBrand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13c3.5-4 8.5-5 14-2.5L21 12" />
+              </svg>
+              Laminado &amp; Diseño de Cejas
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studioBg border border-softBorder text-xs font-medium text-charcoalBeauty">
+              <svg class="w-3.5 h-3.5 text-roseBrand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Lifting de Pestañas
+            </span>
+          </div>
+
+          <!-- Botones de contacto directo: WhatsApp España + Instagram + TikTok -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-3 border-t border-softBorder/80">
+            <a
+              href="https://wa.me/34624531323?text=%C2%A1Hola%20Alba!%20%F0%9F%8E%84%E2%9C%A8%20Estoy%20viendo%20el%20Calendario%20de%20Adviento%20de%20Alba%C2%B4s%20Beauty%20Sal%C3%B3n%20y%20me%20gustar%C3%ADa%20reservar%20una%20cita."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-whatsappGreen hover:bg-whatsappDark text-pureWhite text-xs font-semibold shadow-xs transition-colors"
+            >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+              </svg>
+              <span>WhatsApp (+34 624 53 13 23)</span>
+            </a>
+
+            <a
+              href="https://www.instagram.com/albas.beauttysalon"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full brand-pink-gradient text-pureWhite text-xs font-semibold shadow-xs transition-all"
+            >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              <span>Instagram</span>
+            </a>
+
+            <a
+              href="https://www.tiktok.com/@albas.beauttysalon"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-pureWhite hover:bg-petalLight text-charcoalBeauty border border-roseGold/60 text-xs font-semibold transition-colors"
+            >
+              <svg class="w-3.5 h-3.5 text-mauveDeep" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+              </svg>
+              <span>TikTok</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. CUADRÍCULA DE 24 CASILLAS -->
+    <section aria-label="Casillas del Calendario de Adviento">
+      <div id="calendar-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
+        <!-- Generado dinámicamente por JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       5. PIE DE PÁGINA ELEGANTE
+       ===================================================================== -->
+  <footer class="relative z-10 w-full border-t border-softBorder bg-pureWhite/90 backdrop-blur-xs mt-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-7 flex flex-col lg:flex-row items-center justify-between gap-5 text-xs text-mutedBeauty">
+      <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-center sm:text-left">
+        <p id="footer-copy" class="font-medium text-charcoalBeauty">
+          © 2026 Alba´s Beauty Salón · Todos los derechos reservados.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <a
+            href="https://wa.me/34624531323?text=%C2%A1Hola%20Alba!%20%F0%9F%8E%84%E2%9C%A8%20Te%20escribo%20desde%20el%20Calendario%20de%20Adviento%20de%20Alba%C2%B4s%20Beauty%20Sal%C3%B3n."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-whatsappGreen/10 hover:bg-whatsappGreen hover:text-pureWhite text-sageAccent border border-whatsappGreen/30 transition-colors font-semibold"
+          >
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+            </svg>
+            <span>+34 624 53 13 23</span>
+          </a>
+          <a
+            href="https://www.instagram.com/albas.beauttysalon"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-petalLight/70 hover:bg-mauveDeep hover:text-pureWhite text-mauveDeep border border-softBorder transition-colors font-semibold"
+          >
+            <span>Instagram</span>
+          </a>
+          <a
+            href="https://www.tiktok.com/@albas.beauttysalon"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-petalLight/70 hover:bg-mauveDeep hover:text-pureWhite text-mauveDeep border border-softBorder transition-colors font-semibold"
+          >
+            <span>TikTok</span>
+          </a>
+          <span class="text-roseGoldDark font-semibold hidden sm:inline">@albas.beauttysalon</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <div id="reset-confirm-group" class="hidden items-center gap-2 bg-studioBg px-3.5 py-1.5 rounded-full border border-softBorder shadow-xs">
+          <span class="text-charcoalBeauty font-medium">¿Reiniciar historial?</span>
+          <button id="confirm-reset-yes" type="button" class="text-mauveDeep hover:text-mauveDark font-semibold underline cursor-pointer">
+            Sí, borrar
+          </button>
+          <span class="text-softBorder">|</span>
+          <button id="confirm-reset-no" type="button" class="text-mutedBeauty hover:text-charcoalBeauty cursor-pointer">
+            Cancelar
+          </button>
+        </div>
+
+        <button
+          id="reset-progress-btn"
+          type="button"
+          class="text-mutedBeauty hover:text-mauveDeep underline underline-offset-4 transition-colors cursor-pointer"
+        >
+          Reiniciar progreso
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       4. VENTANA MODAL INTERACTIVA CON WHATSAPP PERSONALIZADO
+       ===================================================================== -->
+  <div
+    id="day-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-charcoalBeauty/45 backdrop-blur-xs transition-opacity"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <div id="modal-panel" class="relative w-full max-w-lg bg-pureWhite border border-roseGold/50 rounded-3xl shadow-modal overflow-hidden modal-animate">
+      
+      <!-- Encabezado Modal -->
+      <div class="brand-pink-gradient px-6 sm:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span id="modal-day-badge" class="inline-block px-3 py-1 rounded-full bg-pureWhite text-mauveDeep text-[11px] font-bold tracking-widest uppercase shadow-xs">
+            DÍA 01
+          </span>
+          <span id="modal-category-badge" class="text-xs font-semibold text-pureWhite/95 tracking-wide">
+            Descuento Especial
+          </span>
+        </div>
+
+        <button
+          id="close-modal-btn"
+          type="button"
+          class="p-1.5 rounded-full text-pureWhite/85 hover:text-pureWhite hover:bg-pureWhite/15 transition-colors cursor-pointer"
+          aria-label="Cerrar ventana"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Cuerpo Modal -->
+      <div class="p-6 sm:p-8">
+        <h3 id="modal-title" class="font-serif text-2xl sm:text-3xl font-semibold text-charcoalBeauty leading-snug mb-2.5">
+          Título de la sorpresa
+        </h3>
+        <p id="modal-message" class="text-sm sm:text-[15px] text-mutedBeauty leading-relaxed mb-5">
+          Descripción de la sorpresa del día.
+        </p>
+
+        <!-- Cuadro de Código Promocional Copiable -->
+        <div id="modal-dynamic-content" class="mb-5">
+          <!-- Se inyecta vía JS -->
+        </div>
+
+        <!-- Botón Principal Destacado: Agendar Cita por WhatsApp -->
+        <div class="mb-4">
+          <a
+            id="modal-whatsapp-btn"
+            href="https://wa.me/34624531323"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-whatsappGreen hover:bg-whatsappDark text-pureWhite text-sm sm:text-[15px] font-bold tracking-wide shadow-md transition-all"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+            </svg>
+            <span>Agendar cita por WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Enlaces Secundarios a Instagram y TikTok + Estado -->
+        <div class="px-4 py-3 rounded-2xl bg-petalLight/65 border border-softBorder flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
+          <span id="modal-status-text" class="text-mutedBeauty flex items-center gap-1.5">
+            <!-- Estado -->
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-mutedBeauty hidden sm:inline">@albas.beauttysalon:</span>
+            <a
+              href="https://www.instagram.com/albas.beauttysalon"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-pureWhite hover:bg-mauveDeep hover:text-pureWhite text-mauveDeep border border-softBorder transition-colors font-semibold"
+            >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              <span>Instagram</span>
+            </a>
+            <a
+              href="https://www.tiktok.com/@albas.beauttysalon"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-pureWhite hover:bg-mauveDeep hover:text-pureWhite text-mauveDeep border border-softBorder transition-colors font-semibold"
+            >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+              </svg>
+              <span>TikTok</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificación Toast -->
+  <div
+    id="toast-notification"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-2"
+  >
+    <div class="bg-charcoalBeauty text-pureWhite text-xs sm:text-sm px-5 py-3 rounded-full shadow-lg border border-roseGold/60 flex items-center gap-2.5">
+      <span class="text-petalPink">✦</span>
+      <span id="toast-message">Esta casilla estará disponible en su fecha correspondiente de diciembre.</span>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       CONFIGURACIÓN DE CAMPAÑA Y LÓGICA INTERACTIVA
+       ===================================================================== -->
+  <script>
+    const CAMPAIGN_CONFIG = {
+      brandEyebrow: "Alba´s Beauty Salón",
+      brandTitle: "Calendario de Adviento · 24 Días de Cuidado & Belleza",
+      footerText: "© 2026 Alba´s Beauty Salón · Todos los derechos reservados.",
+      whatsappPhone: "34624531323",
+      instagramUrl: "https://www.instagram.com/albas.beauttysalon",
+      tiktokUrl: "https://www.tiktok.com/@albas.beauttysalon",
+      previewMode: true,
+      enableSparkles: true,
+      storageKey: "albas_beauty_salon_advent_final_v1",
+      photoStorageKey: "albas_beauty_salon_portrait_v1"
+    };
+
+    const ADVENT_DAYS_DATA = [
+      {
+        day: 1,
+        category: "Descuento Especial",
+        shortLabel: "10% Higiene Facial",
+        title: "10% de descuento en higiene facial",
+        message: "Inicia diciembre luciendo una piel fresca, luminosa y libre de impurezas con nuestro tratamiento de higiene facial profesional.",
+        code: "ALBA01-HIG10",
+        discountLabel: "10% de descuento en Higiene Facial",
+        terms: "Presenta este código o envíalo por WhatsApp al +34 624 53 13 23 al agendar tu cita. Válido durante diciembre."
+      },
+      {
+        day: 2,
+        category: "Regalo Exclusivo",
+        shortLabel: "Cepillito Pestañas",
+        title: "Cepillito de pestañas de regalo",
+        message: "Mantén tus pestañas y cejas siempre peinadas, definidas y cuidadas en casa con este detalle especial de Alba´s Beauty Salón.",
+        code: "ALBA02-CEPILLO",
+        discountLabel: "1 Cepillito de pestañas de regalo",
+        terms: "Reclama tu obsequio en tu próxima visita al salón mostrando este código."
+      },
+      {
+        day: 3,
+        category: "Descuento Especial",
+        shortLabel: "10% Laminado Cejas",
+        title: "10% de descuento en laminado de cejas",
+        message: "Consigue unas cejas definidas, peinadas y con mayor volumen natural para brillar en todas tus celebraciones navideñas.",
+        code: "ALBA03-LAM10",
+        discountLabel: "10% de descuento en Laminado de Cejas",
+        terms: "Válido agendando tu turno con anticipación por WhatsApp o en @albas.beauttysalon."
+      },
+      {
+        day: 4,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Enmarca tu mirada con un diseño y depilación de cejas totalmente de cortesía pensado especialmente para ti.",
+        code: "ALBA04-CEJASFREE",
+        discountLabel: "1 sesión de Depilación de Cejas GRATIS",
+        terms: "Aplica reservando tu espacio con este código. Sujeto a disponibilidad de agenda."
+      },
+      {
+        day: 5,
+        category: "Descuento Especial",
+        shortLabel: "5% Lifting Pestañas",
+        title: "5% de descuento lifting de pestañas",
+        message: "Realza la curvatura natural de tus pestañas sin necesidad de extensiones y disfruta de una mirada despierta cada día.",
+        code: "ALBA05-LIFT05",
+        discountLabel: "5% de descuento en Lifting de Pestañas",
+        terms: "Menciona este código al momento de confirmar tu reserva en Alba´s Beauty Salón."
+      },
+      {
+        day: 6,
+        category: "Súper Oferta",
+        shortLabel: "50% Higiene Facial",
+        title: "50% de descuento higiene facial",
+        message: "¡Sorpresa especial! Disfruta a mitad de precio de nuestra limpieza facial profunda para renovar y revitalizar tu rostro.",
+        code: "ALBA06-HIG50",
+        discountLabel: "50% de descuento en Higiene Facial",
+        terms: "Promoción especial de cupos limitados. Reserva cuanto antes enviando este código por WhatsApp."
+      },
+      {
+        day: 7,
+        category: "Descuento Especial",
+        shortLabel: "10% Laminado Cejas",
+        title: "10% de descuento laminado de cejas",
+        message: "Dale forma, fijación y suavidad a tus cejas con nuestro tratamiento de laminado profesional a precio preferencial.",
+        code: "ALBA07-LAM10",
+        discountLabel: "10% de descuento en Laminado de Cejas",
+        terms: "Válido presentando este código en el salón o enviándolo por WhatsApp."
+      },
+      {
+        day: 8,
+        category: "Descuento Especial",
+        shortLabel: "10% Higiene Facial",
+        title: "10% de descuento higiene facial",
+        message: "Regálate un momento de relajación y cuidado facial para devolverle vitalidad, hidratación y suavidad a tu piel.",
+        code: "ALBA08-HIG10",
+        discountLabel: "10% de descuento en Higiene Facial",
+        terms: "Válido durante todo el mes de diciembre reservando tu cita con antelación."
+      },
+      {
+        day: 9,
+        category: "Descuento Especial",
+        shortLabel: "10% Lifting Pestañas",
+        title: "10% de descuento lifting de pestañas",
+        message: "Luce unas pestañas más largas, elevadas y definidas con un beneficio exclusivo en nuestro servicio estrella.",
+        code: "ALBA09-LIFT10",
+        discountLabel: "10% de descuento en Lifting de Pestañas",
+        terms: "Presenta tu código al agendar vía WhatsApp o en @albas.beauttysalon."
+      },
+      {
+        day: 10,
+        category: "Descuento Especial",
+        shortLabel: "10% Laminado Cejas",
+        title: "10% de descuento laminado de cejas",
+        message: "El secreto de unas cejas armoniosas y naturales con un descuento especial diseñado para nuestras clientas.",
+        code: "ALBA10-LAM10",
+        discountLabel: "10% de descuento en Laminado de Cejas",
+        terms: "No acumulable con otras promociones vigentes. Válido con reserva previa."
+      },
+      {
+        day: 11,
+        category: "Descuento Especial",
+        shortLabel: "10% Higiene Facial",
+        title: "10% de descuento higiene facial",
+        message: "Prepara tu piel antes de las cenas y reuniones de fin de año con una limpieza profunda y revitalizante.",
+        code: "ALBA11-HIG10",
+        discountLabel: "10% de descuento en Higiene Facial",
+        terms: "Envía este cupón por WhatsApp para aplicar tu beneficio al reservar."
+      },
+      {
+        day: 12,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Hoy el detalle corre por nuestra cuenta: disfruta de una depilación de cejas gratuita en Alba´s Beauty Salón.",
+        code: "ALBA12-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Reserva tu cita indicando este código promocional por WhatsApp."
+      },
+      {
+        day: 13,
+        category: "Regalo Exclusivo",
+        shortLabel: "Mascarilla Skincare",
+        title: "Mascarilla de skin care de regalo",
+        message: "Continúa tu ritual de belleza en casa con una mascarilla facial hidratante de obsequio para consentir tu rostro.",
+        code: "ALBA13-MASKFREE",
+        discountLabel: "1 Mascarilla de Skin Care de regalo",
+        terms: "Válido retirando en salón o recibiéndola en tu próxima cita agendada."
+      },
+      {
+        day: 14,
+        category: "Descuento Especial",
+        shortLabel: "10% Laminado Cejas",
+        title: "10% de descuento en laminado de cejas",
+        message: "Estrena una mirada impecable con nuestro laminado de cejas nutritivo y disfruta de un 10% de cortesía.",
+        code: "ALBA14-LAM10",
+        discountLabel: "10% de descuento en Laminado de Cejas",
+        terms: "Válido agendando tu espacio con anticipación en Alba´s Beauty Salón."
+      },
+      {
+        day: 15,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Celebramos la mitad de diciembre obsequiándote una sesión de depilación y perfilado de cejas sin costo.",
+        code: "ALBA15-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Menciona este código al escribirnos por WhatsApp para coordinar tu horario."
+      },
+      {
+        day: 16,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Otra oportunidad especial para lucir unas cejas limpias, simétricas y definidas totalmente gratis.",
+        code: "ALBA16-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Sujeto a disponibilidad de horarios. Reserva enviando este código."
+      },
+      {
+        day: 17,
+        category: "Súper Oferta",
+        shortLabel: "50% Higiene Facial",
+        title: "50% de descuento higiene facial",
+        message: "¡Vuelve nuestro beneficio favorito! Aprovecha un 50% de descuento en Higiene Facial y renueva la luminosidad de tu piel.",
+        code: "ALBA17-HIG50",
+        discountLabel: "50% de descuento en Higiene Facial",
+        terms: "Cupos limitados. Reserva tu cita de inmediato enviando este código por WhatsApp."
+      },
+      {
+        day: 18,
+        category: "Descuento Especial",
+        shortLabel: "10% Laminado Cejas",
+        title: "10% de descuento laminado de cejas",
+        message: "Prepárate para las fiestas con unas cejas perfectamente estilizadas y un 10% de descuento exclusivo.",
+        code: "ALBA18-LAM10",
+        discountLabel: "10% de descuento en Laminado de Cejas",
+        terms: "Válido presentando este código en Alba´s Beauty Salón."
+      },
+      {
+        day: 19,
+        category: "Descuento Especial",
+        shortLabel: "10% Higiene Facial",
+        title: "10% de descuento higiene facial",
+        message: "Cuida y equilibra tu rostro en la recta final del año con nuestra higiene facial profunda a tarifa preferencial.",
+        code: "ALBA19-HIG10",
+        discountLabel: "10% de descuento en Higiene Facial",
+        terms: "Aplica reservando previamente vía WhatsApp o mensaje directo."
+      },
+      {
+        day: 20,
+        category: "Súper Oferta",
+        shortLabel: "50% Higiene Facial",
+        title: "50% de descuento higiene facial",
+        message: "Última oportunidad del mes para disfrutar de nuestra Higiene Facial completa a mitad de precio antes de Navidad.",
+        code: "ALBA20-HIG50",
+        discountLabel: "50% de descuento en Higiene Facial",
+        terms: "Envía este código por WhatsApp para asegurar tu descuento."
+      },
+      {
+        day: 21,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Inicia la semana de Navidad con unas cejas impecables gracias a este regalo directo de nuestro equipo.",
+        code: "ALBA21-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Válido agendando tu hora con anticipación en Alba´s Beauty Salón."
+      },
+      {
+        day: 22,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "Porque los pequeños detalles hacen la diferencia, hoy te regalamos tu depilación de cejas en Alba´s Beauty Salón.",
+        code: "ALBA22-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Presenta este código al reservar por WhatsApp o redes sociales."
+      },
+      {
+        day: 23,
+        category: "Servicio Gratis",
+        shortLabel: "Depilación Cejas Gratis",
+        title: "Depilación de cejas gratis",
+        message: "En la antesala de Nochebuena, déjanos consentirte con una depilación de cejas totalmente gratuita.",
+        code: "ALBA23-CEJASFREE",
+        discountLabel: "Depilación de Cejas GRATIS",
+        terms: "Sujeto a disponibilidad de agenda navideña. Escríbenos por WhatsApp."
+      },
+      {
+        day: 24,
+        category: "Gran Sorpresa · Nochebuena",
+        shortLabel: "Higiene Facial Gratis",
+        title: "Higiene facial completa gratis",
+        message: "¡Feliz Navidad de parte de Alba´s Beauty Salón! Como broche de oro de nuestro calendario, te obsequiamos una Higiene Facial Completa totalmente gratis.",
+        code: "ALBA24-NAVIDADFREE",
+        discountLabel: "1 Higiene Facial Completa GRATIS",
+        terms: "Nuestro mayor regalo navideño. Envía este cupón por WhatsApp para coordinar tu sesión."
+      }
+    ];
+
+    /**
+     * =========================================================================
+     * GESTIÓN DE FOTOGRAFÍA EN ARCO (CON RESPALDO AUTOMÁTICO Y LOCALSTORAGE)
+     * =========================================================================
+     */
+    function initPortraitArch() {
+      const imgEl = document.getElementById('alba-portrait-img');
+      const triggerEl = document.getElementById('alba-arch-trigger');
+      const fileInput = document.getElementById('alba-photo-input');
+
+      // Cargar foto personalizada guardada previamente en navegador si existe
+      try {
+        const savedPhoto = localStorage.getItem(CAMPAIGN_CONFIG.photoStorageKey);
+        if (savedPhoto) {
+          imgEl.src = savedPhoto;
+        }
+      } catch (e) {
+        console.warn("No se pudo leer la foto guardada:", e);
+      }
+
+      // Cadena de respaldo automático si Alba.png no está en la carpeta actual
+      const fallbackCandidates = [
+        'alba.png',
+        'alba.jpg',
+        'Retrato de esteticista con herramientas rosas.png',
+        'https://placehold.co/480x600/FCECF3/B85D84?text=Alba%27s+Beauty+Sal%C3%B3n'
+      ];
+      let fallbackIndex = 0;
+
+      imgEl.addEventListener('error', () => {
+        if (fallbackIndex < fallbackCandidates.length) {
+          imgEl.src = fallbackCandidates[fallbackIndex];
+          fallbackIndex++;
+        }
+      });
+
+      // Permitir hacer clic o Enter sobre el arco para cargar fotografía
+      triggerEl.addEventListener('click', () => fileInput.click());
+      triggerEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fileInput.click();
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataUrl = ev.target.result;
+          imgEl.src = dataUrl;
+          try {
+            localStorage.setItem(CAMPAIGN_CONFIG.photoStorageKey, dataUrl);
+          } catch (err) {
+            console.warn("Imagen cargada en sesión (supera límite de localStorage):", err);
+          }
+          showToast("¡Fotografía de Alba actualizada en el calendario!");
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * ESTADO Y PERSISTENCIA DEL CALENDARIO
+     * =========================================================================
+     */
+    const state = {
+      isPreviewMode: CAMPAIGN_CONFIG.previewMode,
+      openedDays: [],
+      completedDays: [],
+      activeDay: null
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(CAMPAIGN_CONFIG.storageKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state.openedDays = Array.isArray(parsed.openedDays) ? parsed.openedDays : [];
+          state.completedDays = Array.isArray(parsed.completedDays) ? parsed.completedDays : [];
+          if (typeof parsed.isPreviewMode === 'boolean') {
+            state.isPreviewMode = parsed.isPreviewMode;
+          }
+        }
+      } catch (e) {
+        console.warn("No se pudo leer el almacenamiento local:", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(CAMPAIGN_CONFIG.storageKey, JSON.stringify({
+          isPreviewMode: state.isPreviewMode,
+          openedDays: state.openedDays,
+          completedDays: state.completedDays
+        }));
+      } catch (e) {
+        console.warn("No se pudo guardar en almacenamiento local:", e);
+      }
+    }
+
+    function isDayUnlocked(dayNumber) {
+      if (state.isPreviewMode) return true;
+      const now = new Date();
+      if (now.getMonth() === 11) {
+        return dayNumber <= now.getDate();
+      }
+      return false;
+    }
+
+    function updateProgressUI() {
+      const count = state.openedDays.length;
+      const percentage = Math.round((count / 24) * 100);
+      document.getElementById('progress-count').textContent = count;
+      document.getElementById('progress-bar').style.width = `${percentage}%`;
+    }
+
+    function updateModeToggleUI() {
+      const btn = document.getElementById('mode-toggle-btn');
+      const knob = document.getElementById('mode-toggle-knob');
+      const label = document.getElementById('mode-label');
+      const sublabel = document.getElementById('mode-sublabel');
+
+      btn.setAttribute('aria-checked', state.isPreviewMode ? 'true' : 'false');
+
+      if (state.isPreviewMode) {
+        btn.classList.remove('bg-roseGoldLight');
+        btn.classList.add('bg-mauveDeep');
+        knob.classList.remove('translate-x-0');
+        knob.classList.add('translate-x-4');
+        label.textContent = 'Modo Vista Previa';
+        sublabel.textContent = 'Todas las casillas abiertas';
+      } else {
+        btn.classList.remove('bg-mauveDeep');
+        btn.classList.add('bg-roseGoldLight');
+        knob.classList.remove('translate-x-4');
+        knob.classList.add('translate-x-0');
+        label.textContent = 'Fecha Real (Diciembre)';
+        sublabel.textContent = 'Desbloqueo diario';
+      }
+    }
+
+    /**
+     * =========================================================================
+     * RENDERIZADO DE LA CUADRÍCULA DE 24 DÍAS
+     * =========================================================================
+     */
+    function renderGrid() {
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+
+      ADVENT_DAYS_DATA.forEach((item) => {
+        const unlocked = isDayUnlocked(item.day);
+        const isOpened = state.openedDays.includes(item.day);
+        const isCompleted = state.completedDays.includes(item.day);
+        const isDay24 = item.day === 24;
+
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.setAttribute('aria-label', `Día ${item.day}: ${item.category}`);
+
+        let cardClasses = 'advent-card relative group flex flex-col justify-between p-4 sm:p-5 rounded-2xl border text-left focus:outline-none focus:ring-2 focus:ring-roseBrand ';
+
+        if (isDay24) {
+          cardClasses += 'col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-2 min-h-[155px] sm:min-h-[175px] ';
+        } else {
+          cardClasses += 'min-h-[155px] sm:min-h-[175px] ';
+        }
+
+        if (!unlocked) {
+          cardClasses += 'is-locked bg-lockedStudio/85 border-softBorder opacity-80 cursor-not-allowed';
+        } else if (isDay24) {
+          cardClasses += 'ornamental-frame bg-gradient-to-br from-mauveDeep via-roseBrand to-roseGold text-pureWhite border-2 border-roseGold shadow-beauty shadow-roseGlow cursor-pointer';
+        } else if (isOpened) {
+          cardClasses += 'bg-pureWhite border-petalPink shadow-xs cursor-pointer';
+        } else {
+          cardClasses += 'ornamental-frame brand-pink-gradient text-pureWhite border border-roseBrand/60 shadow-beauty cursor-pointer';
+        }
+
+        card.className = cardClasses;
+
+        const formattedDay = String(item.day).padStart(2, '0');
+
+        let statusIconHTML = '';
+        if (!unlocked) {
+          statusIconHTML = `
+            <span class="text-mutedBeauty/60" title="Disponible en diciembre">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </span>
+          `;
+        } else if (isCompleted || isOpened) {
+          statusIconHTML = `
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full ${
+              isDay24
+                ? 'bg-pureWhite text-mauveDeep'
+                : 'bg-sageAccent/10 text-sageAccent border border-sageAccent/25'
+            }" title="Descubierto">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </span>
+          `;
+        } else {
+          statusIconHTML = `
+            <span class="w-2.5 h-2.5 rounded-full bg-pureWhite pulse-beauty" title="Disponible"></span>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="w-full flex items-start justify-between relative z-10">
+            <span class="font-serif text-4xl sm:text-[42px] font-semibold leading-none tracking-tight ${
+              !unlocked
+                ? 'text-mutedBeauty/60'
+                : isOpened && !isDay24
+                  ? 'text-mauveDeep'
+                  : 'text-pureWhite'
+            }">
+              ${formattedDay}
+            </span>
+            ${statusIconHTML}
+          </div>
+
+          <div class="w-full mt-4 relative z-10">
+            ${
+              isDay24
+                ? `<p class="text-[10px] uppercase tracking-[0.22em] text-pureWhite/95 font-semibold mb-1">✦ Gran Sorpresa de Nochebuena</p>
+                   <p class="font-serif text-lg sm:text-xl font-semibold text-pureWhite leading-snug line-clamp-1">${isOpened ? item.title : 'Higiene facial completa gratis'}</p>`
+                : !unlocked
+                  ? `<span class="inline-block text-[10px] uppercase tracking-[0.15em] text-mutedBeauty/60 font-medium mb-0.5">
+                       Diciembre ${item.day}
+                     </span>
+                     <p class="text-xs text-mutedBeauty/65">Bloqueado</p>`
+                  : isOpened
+                    ? `<span class="inline-block text-[10px] uppercase tracking-[0.14em] text-roseGoldDark font-semibold mb-0.5">${item.category}</span>
+                       <p class="text-xs font-semibold text-charcoalBeauty line-clamp-1">${item.shortLabel}</p>`
+                    : `<span class="inline-block text-[10px] uppercase tracking-[0.16em] text-pureWhite/90 font-semibold mb-0.5">
+                         Día ${formattedDay}
+                       </span>
+                       <p class="text-xs text-pureWhite font-medium group-hover:underline underline-offset-4 transition-all">
+                         Descubrir sorpresa
+                       </p>`
+            }
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          if (!unlocked) {
+            showToast(`La casilla del ${item.day} de diciembre se abrirá en su fecha correspondiente.`);
+            return;
+          }
+          openDayModal(item.day);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * VENTANA MODAL INTERACTIVA + ENLACE WHATSAPP PERSONALIZADO
+     * =========================================================================
+     */
+    function buildWhatsAppUrl(item) {
+      const formattedDay = String(item.day).padStart(2, '0');
+      const rawMessage = `¡Hola Alba! 🎄✨ Abrí el Día ${formattedDay} del Calendario de Adviento de Alba´s Beauty Salón y gané: "${item.title}" (Código: ${item.code}). Me gustaría agendar mi cita.`;
+      return `https://wa.me/${CAMPAIGN_CONFIG.whatsappPhone}?text=${encodeURIComponent(rawMessage)}`;
+    }
+
+    function openDayModal(dayNumber) {
+      const item = ADVENT_DAYS_DATA.find((d) => d.day === dayNumber);
+      if (!item) return;
+
+      state.activeDay = dayNumber;
+
+      if (!state.openedDays.includes(dayNumber)) {
+        state.openedDays.push(dayNumber);
+        saveState();
+        updateProgressUI();
+        renderGrid();
+      }
+
+      const formattedDay = String(item.day).padStart(2, '0');
+      document.getElementById('modal-day-badge').textContent = `DÍA ${formattedDay}`;
+      document.getElementById('modal-category-badge').textContent = item.category;
+      document.getElementById('modal-title').textContent = item.title;
+      document.getElementById('modal-message').textContent = item.message;
+
+      // Configurar botón de WhatsApp con mensaje personalizado del día y código
+      const waBtn = document.getElementById('modal-whatsapp-btn');
+      waBtn.href = buildWhatsAppUrl(item);
+
+      renderModalDynamicContent(item);
+      updateModalStatusText(item.day);
+
+      const modal = document.getElementById('day-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function renderModalDynamicContent(item) {
+      const container = document.getElementById('modal-dynamic-content');
+
+      container.innerHTML = `
+        <div class="bg-studioBg border border-softBorder rounded-2xl p-5">
+          <p class="text-xs uppercase tracking-[0.16em] text-mauveDeep font-bold mb-1.5">
+            ${item.discountLabel}
+          </p>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 my-3 p-3 bg-pureWhite rounded-xl border border-dashed border-roseBrand">
+            <code id="discount-code-text" class="font-mono text-base sm:text-lg font-bold tracking-widest text-charcoalBeauty text-center sm:text-left select-all">
+              ${item.code}
+            </code>
+            <button
+              id="copy-code-btn"
+              type="button"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl rose-gold-bg text-pureWhite text-xs font-bold tracking-wide transition-all cursor-pointer shadow-xs"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span id="copy-btn-label">Copiar código</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-mutedBeauty leading-relaxed">
+            ${item.terms}
+          </p>
+        </div>
+      `;
+
+      const copyBtn = document.getElementById('copy-code-btn');
+      copyBtn.addEventListener('click', () => {
+        copyToClipboard(item.code);
+        const label = document.getElementById('copy-btn-label');
+        label.textContent = '¡Código copiado!';
+        copyBtn.classList.remove('rose-gold-bg');
+        copyBtn.classList.add('bg-sageAccent');
+
+        markDayCompleted(item.day);
+
+        setTimeout(() => {
+          if (label) {
+            label.textContent = 'Copiar código';
+            copyBtn.classList.remove('bg-sageAccent');
+            copyBtn.classList.add('rose-gold-bg');
+          }
+        }, 2200);
+      });
+    }
+
+    function markDayCompleted(dayNumber) {
+      if (!state.completedDays.includes(dayNumber)) {
+        state.completedDays.push(dayNumber);
+        saveState();
+        renderGrid();
+        updateModalStatusText(dayNumber);
+      }
+    }
+
+    function updateModalStatusText(dayNumber) {
+      const statusEl = document.getElementById('modal-status-text');
+      const isCompleted = state.completedDays.includes(dayNumber);
+      if (isCompleted) {
+        statusEl.innerHTML = `
+          <span class="w-2 h-2 rounded-full bg-sageAccent"></span>
+          <span class="text-sageAccent font-semibold">Código copiado y listo</span>
+        `;
+      } else {
+        statusEl.innerHTML = `
+          <span class="w-2 h-2 rounded-full bg-roseBrand"></span>
+          <span>Beneficio descubierto</span>
+        `;
+      }
+    }
+
+    function closeDayModal() {
+      const modal = document.getElementById('day-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      state.activeDay = null;
+    }
+
+    /**
+     * =========================================================================
+     * DESTELLOS ORO ROSA EN SEGUNDO PLANO
+     * =========================================================================
+     */
+    function initGoldenSparkles() {
+      if (!CAMPAIGN_CONFIG.enableSparkles) return;
+
+      const canvas = document.getElementById('sparkle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      const particleCount = Math.min(30, Math.floor(width / 40));
+      const particles = [];
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2 + 0.8,
+          speedY: -(Math.random() * 0.22 + 0.07),
+          speedX: (Math.random() - 0.5) * 0.15,
+          phase: Math.random() * Math.PI * 2,
+          twinkleSpeed: Math.random() * 0.025 + 0.01,
+          isRose: i % 2 === 0
+        });
+      }
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      function animateSparkles() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.phase += p.twinkleSpeed;
+
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          if (p.x > width + 10) p.x = -10;
+          if (p.x < -10) p.x = width + 10;
+
+          const alpha = 0.16 + ((Math.sin(p.phase) + 1) / 2) * 0.34;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.isRose
+            ? `rgba(232, 141, 180, ${alpha.toFixed(3)})`
+            : `rgba(201, 154, 126, ${alpha.toFixed(3)})`;
+          ctx.fill();
+        }
+
+        requestAnimationFrame(animateSparkles);
+      }
+
+      animateSparkles();
+    }
+
+    /**
+     * =========================================================================
+     * UTILIDADES E INICIALIZACIÓN
+     * =========================================================================
+     */
+    function copyToClipboard(text) {
+      try {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.style.position = 'fixed';
+        tempInput.style.opacity = '0';
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+      } catch (err) {
+        console.warn('Error al copiar código:', err);
+      }
+    }
+
+    let toastTimeout = null;
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      const msgEl = document.getElementById('toast-message');
+      msgEl.textContent = message;
+
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 3200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initPortraitArch();
+      updateModeToggleUI();
+      updateProgressUI();
+      renderGrid();
+      initGoldenSparkles();
+
+      document.getElementById('mode-toggle-btn').addEventListener('click', () => {
+        state.isPreviewMode = !state.isPreviewMode;
+        saveState();
+        updateModeToggleUI();
+        renderGrid();
+      });
+
+      document.getElementById('close-modal-btn').addEventListener('click', closeDayModal);
+      document.getElementById('day-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'day-modal') {
+          closeDayModal();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && state.activeDay !== null) {
+          closeDayModal();
+        }
+      });
+
+      const resetBtn = document.getElementById('reset-progress-btn');
+      const confirmGroup = document.getElementById('reset-confirm-group');
+      const confirmYes = document.getElementById('confirm-reset-yes');
+      const confirmNo = document.getElementById('confirm-reset-no');
+
+      resetBtn.addEventListener('click', () => {
+        resetBtn.classList.add('hidden');
+        confirmGroup.classList.remove('hidden');
+        confirmGroup.classList.add('flex');
+      });
+
+      confirmNo.addEventListener('click', () => {
+        confirmGroup.classList.add('hidden');
+        confirmGroup.classList.remove('flex');
+        resetBtn.classList.remove('hidden');
+      });
+
+      confirmYes.addEventListener('click', () => {
+        state.openedDays = [];
+        state.completedDays = [];
+        saveState();
+        updateProgressUI();
+        renderGrid();
+
+        confirmGroup.classList.add('hidden');
+        confirmGroup.classList.remove('flex');
+        resetBtn.classList.remove('hidden');
+        showToast('El progreso del calendario ha sido reiniciado.');
+      });
+    });
+  </script>
+</body>
+</html>
